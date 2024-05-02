@@ -1,0 +1,99 @@
+.addDataText {
+  left: 30px;
+  position: absolute;
+  transform: translate3d(250%, 0, 0);
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.statText {
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.statCard:hover {
+  animation: vibration 0.2s linear;
+}
+.statCard:hover .addDataText {
+  transform: translate3d(0, 0, 0);
+}
+.statCard:hover .statText {
+  translate: translate3d(-125%, 0, 0);
+}
+
+.backButton:hover svg {
+  transform: translateX(-5px);
+  transition: transform 0.1s linear;
+}
+
+.rumble svg:hover {
+  animation: iconVibration 0.2s linear;
+}
+
+.dropDownIcon {
+  animation: upAndDown 0.3s linear;
+}
+
+.checkDay::after {
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 11px;
+  height: 15px;
+  width: 7px;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+  transform: rotate(45deg);
+}
+
+@keyframes upAndDown {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@keyframes iconVibration {
+  0% {
+    transform: rotate(15deg);
+  }
+  20% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(-15deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes vibration {
+  0% {
+    transform: rotate(2deg);
+  }
+  20% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(-2deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/*# sourceMappingURL=styles.module.css.map */
