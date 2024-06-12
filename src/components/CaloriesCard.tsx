@@ -45,7 +45,7 @@ function CaloriesCard() {
   }, [getTotalPercentageCalories]);
 
   return (
-    <div className="shadow-lg w-1/2 p-5 rounded-xl">
+    <div className="shadow-lg w-1/2 p-5 rounded-xl bg-white">
       <h1 className="text-2xl">Calories burned</h1>
       <div className="flex my-8">
         <div className="grow self-end">
