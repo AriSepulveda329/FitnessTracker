@@ -1,20 +1,17 @@
-"use client";
-
-import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 function Register() {
-  const [name, setName] = useState("");
-  const [wheight, setWheight] = useState<number>();
-  const [heightFormat, setHeightFormat] = useState<"cm" | "ft">("cm");
-  const [height, setHeight] = useState<number>();
-  const [wheightFormat, setWheightFormat] = useState<"kg" | "lb">("kg");
-  const router = useRouter();
-
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(name, wheight, heightFormat, height, wheightFormat);
-    router.push("/");
+  const submitHandler = async (formData: FormData) => {
+    "use server";
+    const user = {
+      title: formData.get("name"),
+      email: formData.get("email"),
+      height: formData.get("height"),
+      hformat: formData.get("heightFormat"),
+      wheight: formData.get("wheight"),
+      wFormat: formData.get("wheightFormat"),
+    };
+    console.log(user);
   };
 
   return (
@@ -22,11 +19,8 @@ function Register() {
       <div className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md">
         <p className="text-2xl font-medium mb-2">Welcome!</p>
         <p className="mb-6">Could you tell us about you before we start?</p>
-        <form
-          className="flex w-full flex-col gap-y-4"
-          onSubmit={(e) => submitHandler(e)}
-        >
-          <div>
+        <form className="flex w-full flex-col gap-y-4" action={submitHandler}>
+          <fieldset>
             <label className="block font-medium mb-2" htmlFor="name">
               Name
             </label>
@@ -34,23 +28,35 @@ function Register() {
               className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
               type="text"
               id="name"
+              name="name"
               placeholder="John Doe."
-              onChange={(e) => setName(e.target.value)}
             />
-          </div>
-          <div>
+          </fieldset>
+          <fieldset>
+            <label className="block font-medium mb-2" htmlFor="name">
+              Email
+            </label>
+            <input
+              className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="johndoe@email.com"
+            />
+          </fieldset>
+          <fieldset>
             <label className="block font-medium mb-2" htmlFor="height">
               Height
             </label>
-            <section className="flex">
+            <div className="flex">
               <input
                 className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
                 type="number"
                 id="height"
+                name="height"
                 placeholder="140"
                 min={100}
                 max={300}
-                onChange={(e) => setHeight(parseInt(e.target.value))}
               />
               <ul className="flex">
                 <li>
@@ -60,7 +66,6 @@ function Register() {
                     name="heightFormat"
                     value="cm"
                     className="hidden peer"
-                    onChange={(e) => setHeightFormat(e.target.value as "cm")}
                     defaultChecked
                   />
                   <label
@@ -77,7 +82,6 @@ function Register() {
                     name="heightFormat"
                     value="ft"
                     className="hidden peer"
-                    onChange={(e) => setHeightFormat(e.target.value as "ft")}
                   />
                   <label
                     htmlFor="ft"
@@ -87,21 +91,21 @@ function Register() {
                   </label>
                 </li>
               </ul>
-            </section>
-          </div>
-          <div>
+            </div>
+          </fieldset>
+          <fieldset>
             <label className="block font-medium mb-2" htmlFor="wheight">
               Wheight
             </label>
-            <section className="flex">
+            <div className="flex">
               <input
                 className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
                 type="number"
                 id="wheight"
+                name="wheight"
                 placeholder="30"
                 min={15}
                 max={300}
-                onChange={(e) => setWheight(parseInt(e.target.value))}
               />
               <ul className="flex">
                 <li>
@@ -111,7 +115,6 @@ function Register() {
                     name="wheightFormat"
                     value="kg"
                     className="hidden peer"
-                    onChange={(e) => setWheightFormat(e.target.value as "kg")}
                     defaultChecked
                   />
                   <label
@@ -128,7 +131,6 @@ function Register() {
                     name="wheightFormat"
                     value="lb"
                     className="hidden peer"
-                    onChange={(e) => setWheightFormat(e.target.value as "lb")}
                   />
                   <label
                     htmlFor="lb"
@@ -138,8 +140,8 @@ function Register() {
                   </label>
                 </li>
               </ul>
-            </section>
-          </div>
+            </div>
+          </fieldset>
           <button
             type="submit"
             className="bg-green-500 text-white w-full py-2 mt-4 rounded hover:bg-green-600 transition-colors"

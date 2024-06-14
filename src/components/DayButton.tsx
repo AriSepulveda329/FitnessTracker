@@ -30,8 +30,8 @@ function DayButton({
         } rounded-full hover:ring-1 hover:translate-y-[-8px] transition-transform`}
       />
       <p
-        className={`mt-1 text-gray-400 ${
-          wkDay === day && "text-black font-medium"
+        className={`mt-1  ${
+          wkDay === day ? "text-black font-bold" : "text-gray-400"
         }`}
       >
         {weekLetter}
