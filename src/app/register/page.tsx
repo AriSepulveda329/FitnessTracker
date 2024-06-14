@@ -1,24 +1,11 @@
-import { useRouter } from "next/navigation";
+import { submitHandler } from "@/lib/actions";
 
 function Register() {
-  const submitHandler = async (formData: FormData) => {
-    "use server";
-    const user = {
-      title: formData.get("name"),
-      email: formData.get("email"),
-      height: formData.get("height"),
-      hformat: formData.get("heightFormat"),
-      wheight: formData.get("wheight"),
-      wFormat: formData.get("wheightFormat"),
-    };
-    console.log(user);
-  };
-
   return (
-    <div className="flex w-screen h-screen justify-center items-center bg-green-100">
-      <div className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md">
+    <main className="flex w-screen h-screen justify-center items-center bg-green-100">
+      <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
         <p className="text-2xl font-medium mb-2">Welcome!</p>
-        <p className="mb-6">Could you tell us about you before we start?</p>
+        <p className="mb-6">Tell us about you before we start!</p>
         <form className="flex w-full flex-col gap-y-4" action={submitHandler}>
           <fieldset>
             <label className="block font-medium mb-2" htmlFor="name">
@@ -55,8 +42,8 @@ function Register() {
                 id="height"
                 name="height"
                 placeholder="140"
-                min={100}
-                max={300}
+                min={4}
+                max={280}
               />
               <ul className="flex">
                 <li>
@@ -104,8 +91,8 @@ function Register() {
                 id="wheight"
                 name="wheight"
                 placeholder="30"
-                min={15}
-                max={300}
+                min={20}
+                max={1100}
               />
               <ul className="flex">
                 <li>
@@ -149,8 +136,8 @@ function Register() {
             Submit
           </button>
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
 

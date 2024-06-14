@@ -17,7 +17,7 @@ db.query(
   `CREATE TABLE IF NOT EXISTS users (
 	ID serial NOT NULL PRIMARY KEY,
 	name text NOT NULL,
-	email text NOT NULL,
+	email text NOT NULL UNIQUE,
 	height smallint NOT NULL CHECK (height >= 4 AND height <= 280),
 	hFormat char(2) CHECK (hFormat = 'cm' OR hFormat = 'ft') DEFAULT 'cm',
 	wheight smallint NOT NULL CHECK (wheight >= 20 AND wheight <= 1100),
@@ -59,3 +59,5 @@ db.query(
     else console.log("Exercises table works correctly");
   }
 );
+
+module.exports = db;
