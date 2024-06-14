@@ -1,12 +1,20 @@
+"use client";
+
+import SubmitButton from "@/components/SubmitButton";
 import { submitHandler } from "@/lib/actions";
+import { useFormState } from "react-dom";
 
 function Register() {
+  const [state, formAction] = useFormState<
+    { message: string | null },
+    FormData
+  >(submitHandler, { message: null });
   return (
     <main className="flex w-screen h-screen justify-center items-center bg-green-100">
       <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
         <p className="text-2xl font-medium mb-2">Welcome!</p>
         <p className="mb-6">Tell us about you before we start!</p>
-        <form className="flex w-full flex-col gap-y-4" action={submitHandler}>
+        <form className="flex w-full flex-col gap-y-4" action={formAction}>
           <fieldset>
             <label className="block font-medium mb-2" htmlFor="name">
               Name
@@ -17,6 +25,7 @@ function Register() {
               id="name"
               name="name"
               placeholder="John Doe."
+              required
             />
           </fieldset>
           <fieldset>
@@ -29,6 +38,7 @@ function Register() {
               id="email"
               name="email"
               placeholder="johndoe@email.com"
+              required
             />
           </fieldset>
           <fieldset>
@@ -44,6 +54,7 @@ function Register() {
                 placeholder="140"
                 min={4}
                 max={280}
+                required
               />
               <ul className="flex">
                 <li>
@@ -93,6 +104,7 @@ function Register() {
                 placeholder="30"
                 min={20}
                 max={1100}
+                required
               />
               <ul className="flex">
                 <li>
@@ -129,12 +141,7 @@ function Register() {
               </ul>
             </div>
           </fieldset>
-          <button
-            type="submit"
-            className="bg-green-500 text-white w-full py-2 mt-4 rounded hover:bg-green-600 transition-colors"
-          >
-            Submit
-          </button>
+          <SubmitButton />
         </form>
       </section>
     </main>
