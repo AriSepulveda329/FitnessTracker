@@ -1,14 +1,14 @@
 "use client";
 
 import SubmitButton from "@/components/SubmitButton";
-import { submitHandler } from "@/lib/actions";
+import { userSubmitHandler } from "@/lib/actions";
 import { useFormState } from "react-dom";
 
 function Register() {
   const [state, formAction] = useFormState<
     { message: string | null },
     FormData
-  >(submitHandler, { message: null });
+  >(userSubmitHandler, { message: null });
   return (
     <main className="flex w-screen h-screen justify-center items-center bg-green-100">
       <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
@@ -141,6 +141,7 @@ function Register() {
               </ul>
             </div>
           </fieldset>
+          {state.message && <p className="text-red-500">{state.message}</p>}
           <SubmitButton />
         </form>
       </section>

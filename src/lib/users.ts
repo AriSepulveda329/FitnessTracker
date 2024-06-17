@@ -23,6 +23,6 @@ export async function saveUser({
       [name, email, height, hformat, wheight, wformat]
     );
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
