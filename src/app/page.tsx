@@ -1,94 +1,152 @@
 "use client";
 
-import CaloriesCard from "@/components/CaloriesCard";
-import ExerciseCard from "@/components/ExerciseCard";
-import StatsCard from "@/components/StatsCard";
-import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
-import LocalDrinkIcon from "@mui/icons-material/LocalDrink";
-import SportsScoreIcon from "@mui/icons-material/SportsScore";
-import BedIcon from "@mui/icons-material/Bed";
-import React, { useCallback, useEffect, useMemo } from "react";
-import useDate from "@/hooks/useDate";
-import { MyContextProvider } from "@/utils/MyContext";
+import SubmitButton from "@/components/SubmitButton";
+import { userSubmitHandler } from "@/lib/actions";
+import { useFormState } from "react-dom";
 
-export default function Home() {
-  const { formatWeekDay, day, date } = useDate(new Date());
-
-  const today = useMemo(() => formatWeekDay(), [formatWeekDay]);
-
-  // Función para borrar el localStorage
-  const eraseLocalStorage = useCallback(() => {
-    localStorage.clear();
-    localStorage.setItem("lastErased", date.toISOString());
-  }, [date]);
-
-  // Verificar si hoy es lunes (día 1)
-  const isMonday = useMemo(() => {
-    return day === 1; // 1 es lunes
-  }, [day]);
-
-  useEffect(() => {
-    const lastErased = localStorage.getItem("lastErased");
-    if (
-      isMonday &&
-      (!lastErased || new Date(lastErased).getDate() !== new Date().getDate())
-    ) {
-      eraseLocalStorage();
-    }
-  }, [isMonday, eraseLocalStorage]);
-
+function Register() {
+  const [state, formAction] = useFormState<
+    { message: string | null },
+    FormData
+  >(userSubmitHandler, { message: null });
   return (
-    <div className="flex flex-col p-8 h-screen">
-      <h1 className="text-3xl font-medium">Fitness Dashboard</h1>
-      <div className="text-gray-500 text-xl my-3">
-        <h2>{today}</h2>
-      </div>
-      <div className="grow flex flex-col">
-        <div className="flex justify-between gap-32 my-5 grow">
-          <StatsCard
-            url="../stats/activity"
-            bgColor="bg-red-500"
-            title="Activity"
-            logo={<DirectionsRunIcon className="text-7xl" />}
-            subtitle="Time"
-            tableName="activity"
-            typeData="mins"
-          />
-          <StatsCard
-            url="../stats/water"
-            bgColor="bg-blue-500"
-            title="Water"
-            logo={<LocalDrinkIcon className="text-7xl" />}
-            subtitle="Glasses"
-            tableName="water"
-            typeData="glasses"
-          />
-          <StatsCard
-            url="../stats/goal"
-            bgColor="bg-orange-400"
-            title="Goal"
-            logo={<SportsScoreIcon className="text-7xl" />}
-            subtitle="Distance"
-            tableName="goal"
-            typeData="meters"
-          />
-          <StatsCard
-            url="../stats/sleep"
-            bgColor="bg-green-400"
-            title="Sleep"
-            logo={<BedIcon className="text-7xl" />}
-            subtitle="Hours slept"
-            tableName="sleep"
-            typeData="hrs"
-          />
-        </div>
-        <div className="flex gap-32">
-          <MyContextProvider>
-            <ExerciseCard />
-            <CaloriesCard />
-          </MyContextProvider>
-        </div>
-      </div>
-    </div>
+    <main className="flex w-screen h-screen justify-center items-center bg-green-100">
+      <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
+        <p className="text-2xl font-medium mb-2">Welcome!</p>
+        <p className="mb-6">Tell us about you before we start!</p>
+        <form className="flex w-full flex-col gap-y-4" action={formAction}>
+          <fieldset>
+            <label className="block font-medium mb-2" htmlFor="name">
+              Name
+            </label>
+            <input
+              className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
+              type="text"
+              id="name"
+              name="name"
+              placeholder="John Doe."
+              required
+            />
+          </fieldset>
+          <fieldset>
+            <label className="block font-medium mb-2" htmlFor="name">
+              Email
+            </label>
+            <input
+              className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="johndoe@email.com"
+              required
+            />
+          </fieldset>
+          <fieldset>
+            <label className="block font-medium mb-2" htmlFor="height">
+              Height
+            </label>
+            <div className="flex">
+              <input
+                className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
+                type="number"
+                id="height"
+                name="height"
+                placeholder="140"
+                min={4}
+                max={280}
+                required
+              />
+              <ul className="flex">
+                <li>
+                  <input
+                    type="radio"
+                    id="cm"
+                    name="heightFormat"
+                    value="cm"
+                    className="hidden peer"
+                    defaultChecked
+                  />
+                  <label
+                    htmlFor="cm"
+                    className="flex items-center justify-center w-16 h-full border ml-2 rounded-l cursor-pointer peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-none"
+                  >
+                    cm.
+                  </label>
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    id="ft"
+                    name="heightFormat"
+                    value="ft"
+                    className="hidden peer"
+                  />
+                  <label
+                    htmlFor="ft"
+                    className="flex items-center justify-center w-16 h-full border rounded-r cursor-pointer peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-none"
+                  >
+                    ft.
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </fieldset>
+          <fieldset>
+            <label className="block font-medium mb-2" htmlFor="wheight">
+              Wheight
+            </label>
+            <div className="flex">
+              <input
+                className="w-full px-3 py-2 border rounded appearance-none focus:outline-none focus:ring-2"
+                type="number"
+                id="wheight"
+                name="wheight"
+                placeholder="30"
+                min={20}
+                max={1100}
+                required
+              />
+              <ul className="flex">
+                <li>
+                  <input
+                    type="radio"
+                    id="kg"
+                    name="wheightFormat"
+                    value="kg"
+                    className="hidden peer"
+                    defaultChecked
+                  />
+                  <label
+                    htmlFor="kg"
+                    className="flex items-center justify-center w-16 h-full border ml-2 rounded-l cursor-pointer peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-none"
+                  >
+                    kg.
+                  </label>
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    id="lb"
+                    name="wheightFormat"
+                    value="lb"
+                    className="hidden peer"
+                  />
+                  <label
+                    htmlFor="lb"
+                    className="flex items-center justify-center w-16 h-full border rounded-r cursor-pointer peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-none"
+                  >
+                    lb.
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </fieldset>
+          {state.message && <p className="text-red-500">{state.message}</p>}
+          <SubmitButton />
+        </form>
+      </section>
+    </main>
   );
 }
+
+export default Register;

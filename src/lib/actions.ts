@@ -38,6 +38,6 @@ export const userSubmitHandler = async (
     return { message: "Not valid wheight format." };
 
   await saveUser(user);
-  revalidatePath("/", "layout");
-  redirect("/");
+  revalidatePath("/dashboard", "layout");
+  redirect("/dashboard");
 };
