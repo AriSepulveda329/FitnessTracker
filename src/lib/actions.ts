@@ -4,6 +4,20 @@ import { redirect } from "next/navigation";
 import { saveUser } from "./users";
 import { revalidatePath } from "next/cache";
 
+export interface UserErrors {
+  [index: string]: string;
+}
+
+interface DatabaseError {
+  message: string;
+  code?: string;
+  constraint?: string;
+}
+
+function isDatabaseError(error: any): error is DatabaseError {
+  return error.constraint !== undefined;
+}
+
 function isInvalidText(text: string) {
   return !text || text.trim() === "";
 }
@@ -13,7 +27,7 @@ function isInvalidNumber(number: number, min: number, max: number) {
 }
 
 export const userSubmitHandler = async (
-  prevState: { message: string | null },
+  prevState: { errors: UserErrors | null },
   formData: FormData
 ) => {
   const user = {
@@ -25,19 +39,32 @@ export const userSubmitHandler = async (
     wformat: formData.get("wheightFormat") as "kg" | "lb",
   };
 
-  if (isInvalidText(user.name)) return { message: "Not valid username." };
-  else if (isInvalidText(user.email) || !user.email.includes("@"))
-    return { message: "Not valid email." };
-  else if (isInvalidNumber(user.height, 4, 280))
-    return { message: "Not valid height value." };
-  else if (isInvalidNumber(user.wheight, 20, 1100))
-    return { message: "Not valid wheight value." };
-  else if (user.hformat !== "cm" && user.hformat !== "ft")
-    return { message: "Not valid height format." };
-  else if (user.wformat !== "kg" && user.wformat !== "lb")
-    return { message: "Not valid wheight format." };
+  let errors: UserErrors = {};
 
-  await saveUser(user);
-  revalidatePath("/dashboard", "layout");
+  if (isInvalidText(user.name)) errors.name = "Not valid username.";
+  if (isInvalidText(user.email) || !user.email.includes("@"))
+    errors.email = "Not valid email.";
+  if (isInvalidNumber(user.height, 4, 280))
+    errors.height = "Not valid height value.";
+  if (isInvalidNumber(user.wheight, 20, 1100))
+    errors.wheight = "Not valid wheight value.";
+  if (user.hformat !== "cm" && user.hformat !== "ft")
+    errors.hformat = "Not valid height format.";
+  if (user.wformat !== "kg" && user.wformat !== "lb")
+    errors.wformat = "Not valid wheight format.";
+
+  if (Object.keys(errors).length > 0) return { errors };
+
+  try {
+    await saveUser(user);
+  } catch (error) {
+    if (isDatabaseError(error)) {
+      return {
+        errors: { email: "Email already exists. Please choose another one." },
+      };
+    }
+    throw error;
+  }
+  revalidatePath("/", "layout");
   redirect("/dashboard");
 };

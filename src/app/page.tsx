@@ -1,14 +1,14 @@
 "use client";
 
 import SubmitButton from "@/components/SubmitButton";
-import { userSubmitHandler } from "@/lib/actions";
+import { UserErrors, userSubmitHandler } from "@/lib/actions";
 import { useFormState } from "react-dom";
 
 function Register() {
   const [state, formAction] = useFormState<
-    { message: string | null },
+    { errors: UserErrors | null },
     FormData
-  >(userSubmitHandler, { message: null });
+  >(userSubmitHandler, { errors: null });
   return (
     <main className="flex w-screen h-screen justify-center items-center bg-green-100">
       <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
@@ -141,7 +141,14 @@ function Register() {
               </ul>
             </div>
           </fieldset>
-          {state.message && <p className="text-red-500">{state.message}</p>}
+          {state.errors && (
+            <ul id="form-errors" className="text-red-500">
+              {Object.keys(state.errors).map(
+                (error) =>
+                  state.errors && <li key={error}>{state.errors[error]}</li>
+              )}
+            </ul>
+          )}
           <SubmitButton />
         </form>
       </section>

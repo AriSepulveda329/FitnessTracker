@@ -17,12 +17,8 @@ export async function saveUser({
   wheight,
   wformat,
 }: User) {
-  try {
-    await db.query(
-      "INSERT INTO users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6);",
-      [name, email, height, hformat, wheight, wformat]
-    );
-  } catch (error) {
-    throw error;
-  }
+  await db.query(
+    "INSERT INTO users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6);",
+    [name, email, height, hformat, wheight, wformat]
+  );
 }
