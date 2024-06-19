@@ -1,5 +1,5 @@
-const pg = require("pg");
-const env = require("dotenv");
+import pg from "pg";
+import env from "dotenv";
 
 env.config();
 
@@ -8,7 +8,7 @@ const db = new pg.Client({
   host: process.env.PG_HOST,
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
+  port: parseInt(process.env.PG_PORT || ""),
 });
 
 db.connect();
@@ -26,6 +26,19 @@ db.query(
   (error, res) => {
     if (error) console.log(error);
     else console.log("User table works correctly");
+  }
+);
+
+db.query(
+  `CREATE TABLE IF NOT EXISTS sessions (
+    id text NOT NULL PRIMARY KEY UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    user_id integer NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );`,
+  (error, res) => {
+    if (error) console.log(error);
+    else console.log("Sessions table works correctly");
   }
 );
 
@@ -60,4 +73,4 @@ db.query(
   }
 );
 
-module.exports = db;
+export default db;

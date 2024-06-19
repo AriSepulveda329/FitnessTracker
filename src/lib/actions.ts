@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { saveUser } from "./users";
 import { revalidatePath } from "next/cache";
+import { createAuthSession } from "./auth";
 
 export interface UserErrors {
   [index: string]: string;
@@ -56,7 +57,10 @@ export const userSubmitHandler = async (
   if (Object.keys(errors).length > 0) return { errors };
 
   try {
-    await saveUser(user);
+    const id = await saveUser(user);
+    await createAuthSession(id.toString());
+    revalidatePath("/", "layout");
+    redirect("/dashboard");
   } catch (error) {
     if (isDatabaseError(error)) {
       return {
@@ -65,6 +69,4 @@ export const userSubmitHandler = async (
     }
     throw error;
   }
-  revalidatePath("/", "layout");
-  redirect("/dashboard");
 };

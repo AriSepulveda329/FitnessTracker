@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import useStorage, { Exercise, Item } from "@/hooks/useStorage";

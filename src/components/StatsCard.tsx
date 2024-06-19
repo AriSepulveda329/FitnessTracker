@@ -1,9 +1,12 @@
+"use client";
+
 import { SvgIconProps } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/styles.module.css";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useStorage from "@/hooks/useStorage";
+import Link from "next/link";
 
 interface StatsCardInterface {
   title: string;
@@ -46,9 +49,9 @@ function StatsCard({
   }, [items]);
 
   return (
-    <div
+    <Link
       className={`${bgColor} ${styles.statCard} flex flex-col justify-evenly items-center w-72 min-h-80 text-white py-5 rounded-xl shadow-lg cursor-pointer`}
-      onClick={() => router.push(url)}
+      href={url}
     >
       <p className="font-semibold text-xl">{title}</p>
       {logo}
@@ -63,7 +66,7 @@ function StatsCard({
           <AddIcon /> Add Data
         </span>
       </p>
-    </div>
+    </Link>
   );
 }
 

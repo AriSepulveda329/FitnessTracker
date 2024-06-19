@@ -1,3 +1,5 @@
+"use client";
+
 import { Exercise } from "@/hooks/useStorage";
 import React, { useCallback, useContext, useState } from "react";
 

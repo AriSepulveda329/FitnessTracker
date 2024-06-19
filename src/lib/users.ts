@@ -1,4 +1,4 @@
-import db from "../../initdb";
+import db from "./initdb";
 
 interface User {
   name: string;
@@ -16,9 +16,10 @@ export async function saveUser({
   hformat,
   wheight,
   wformat,
-}: User) {
-  await db.query(
-    "INSERT INTO users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6);",
+}: User): Promise<number> {
+  const response = await db.query(
+    "INSERT INTO users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;",
     [name, email, height, hformat, wheight, wformat]
   );
+  return response.rows[0].id;
 }
