@@ -3,34 +3,14 @@
 import { useEffect, useState } from "react";
 import { AddButtonProps } from "./AddButton";
 import useStorage, { Item } from "@/hooks/useStorage";
+import { ItemUnits } from "@/utils/datasets";
+import DropdownButton, { DropDownButtonProps } from "./DropdownButton";
 
 interface ItemsTableProps {
   type: string;
-  AddButton?: React.ComponentType<AddButtonProps>;
+  AddButton: React.ComponentType<AddButtonProps>;
+  DropdownButton: React.ComponentType<DropDownButtonProps>;
 }
-
-type ItemUnits = {
-  [index: string]: { measure: string; unit: string };
-};
-
-const ItemUnits: ItemUnits = {
-  water: {
-    measure: "Glasses",
-    unit: "glass",
-  },
-  sleep: {
-    measure: "Time",
-    unit: "hr.",
-  },
-  goal: {
-    measure: "Distance",
-    unit: "m.",
-  },
-  activity: {
-    measure: "Time",
-    unit: "min.",
-  },
-};
 
 function ItemsTable({ type, AddButton }: ItemsTableProps) {
   const [items, setItems] = useState<Item[]>();
@@ -43,7 +23,11 @@ function ItemsTable({ type, AddButton }: ItemsTableProps) {
   return (
     <div className="flex flex-col items-center gap-5">
       <h1 className="text-xl font-medium">Add {ItemUnits[type].measure}</h1>
-      {AddButton && <AddButton items={items} setItems={setItems} />}
+      {type === "water" ? (
+        <AddButton items={items} setItems={setItems} />
+      ) : (
+        <DropdownButton items={items} setItems={setItems} type={type} />
+      )}
       <div className="flex flex-col bg-gray-200 w-full rounded-lg">
         {items ? (
           items.map((item, index) => (
@@ -53,7 +37,9 @@ function ItemsTable({ type, AddButton }: ItemsTableProps) {
                 index === items.length - 1 || "border-b-2"
               } border-gray-300 py-2 px-4`}
             >
-              <span>{item.value} item</span>
+              <span>
+                {item.value} {ItemUnits[type].unit}
+              </span>
               <span>{item.time}</span>
             </p>
           ))
