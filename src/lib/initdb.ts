@@ -25,7 +25,6 @@ db.query(
 );`,
   (error, res) => {
     if (error) console.log(error);
-    else console.log("User table works correctly");
   }
 );
 
@@ -38,7 +37,6 @@ db.query(
   );`,
   (error, res) => {
     if (error) console.log(error);
-    else console.log("Sessions table works correctly");
   }
 );
 
@@ -53,7 +51,6 @@ db.query(
 );`,
   (error, res) => {
     if (error) console.log(error);
-    else console.log("Activities table works correctly");
   }
 );
 
@@ -69,7 +66,6 @@ db.query(
 );`,
   (error, res) => {
     if (error) console.log(error);
-    else console.log("Exercises table works correctly");
   }
 );
 
