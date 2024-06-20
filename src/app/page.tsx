@@ -1,14 +1,15 @@
 "use client";
 
 import SubmitButton from "@/components/SubmitButton";
-import { UserErrors, userSubmitHandler } from "@/lib/actions";
+import { UserErrors, signup } from "@/lib/actions";
+import Link from "next/link";
 import { useFormState } from "react-dom";
 
 function Register() {
   const [state, formAction] = useFormState<
     { errors: UserErrors | null },
     FormData
-  >(userSubmitHandler, { errors: null });
+  >(signup, { errors: null });
   return (
     <main className="flex w-screen h-screen justify-center items-center bg-green-100">
       <section className="flex bg-white flex-col items-center p-8 rounded-lg shadow-md w-[24rem]">
@@ -151,6 +152,9 @@ function Register() {
           )}
           <SubmitButton />
         </form>
+        <Link href={"/login"} className="mt-4 text-green-600 hover:underline">
+          I already have an account
+        </Link>
       </section>
     </main>
   );

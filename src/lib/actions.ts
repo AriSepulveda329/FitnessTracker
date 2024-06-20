@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { saveUser } from "./users";
+import { getUserByEmail, saveUser } from "./users";
 import { revalidatePath } from "next/cache";
 import { createAuthSession } from "./auth";
 
@@ -27,7 +27,7 @@ function isInvalidNumber(number: number, min: number, max: number) {
   return !number || (number <= min && number >= max);
 }
 
-export const userSubmitHandler = async (
+export const signup = async (
   prevState: { errors: UserErrors | null },
   formData: FormData
 ) => {
@@ -67,6 +67,29 @@ export const userSubmitHandler = async (
         errors: { email: "Email already exists. Please choose another one." },
       };
     }
+    throw error;
+  }
+};
+
+export const login = async (
+  prevState: { errors: UserErrors | null } | undefined,
+  formData: FormData
+) => {
+  const email = formData.get("email") as string;
+
+  try {
+    const existingUser = await getUserByEmail(email);
+    if (!existingUser || !existingUser.id) {
+      return {
+        errors: {
+          email: "Could not authenticate user, please check your credentials.",
+        } as UserErrors,
+      };
+    }
+    await createAuthSession(existingUser.id.toString());
+    revalidatePath("/", "layout");
+    redirect("/dashboard");
+  } catch (error) {
     throw error;
   }
 };

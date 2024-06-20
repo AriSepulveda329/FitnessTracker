@@ -13,7 +13,7 @@ function SubmitButton() {
       } text-white w-full py-2 mt-4 rounded transition-colors`}
       disabled={pending}
     >
-      {pending ? "Registering..." : "Submit"}
+      {pending ? "Checking..." : "Submit"}
     </button>
   );
 }
