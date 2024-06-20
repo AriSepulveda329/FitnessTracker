@@ -1,6 +1,6 @@
 import db from "./initdb";
 
-interface User {
+export interface User {
   id?: number;
   name: string;
   email: string;
@@ -29,6 +29,17 @@ export async function getUserByEmail(email: string): Promise<User> {
   try {
     const response = await db.query("SELECT * FROM users WHERE email = $1;", [
       email,
+    ]);
+    return response.rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserById(id: string): Promise<User> {
+  try {
+    const response = await db.query("SELECT * FROM users WHERE id = $1;", [
+      parseInt(id),
     ]);
     return response.rows[0];
   } catch (error) {

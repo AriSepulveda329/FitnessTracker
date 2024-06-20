@@ -7,8 +7,13 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import LogoutButton from "./LogoutButton";
 
-function Dashboard({ children }: PropsWithChildren) {
+interface DashboardProps extends PropsWithChildren {
+  username: string;
+}
+
+function Dashboard({ children, username }: DashboardProps) {
   const { formatWeekDay, day, date } = useDate(new Date());
 
   const today = useMemo(() => formatWeekDay(), [formatWeekDay]);
@@ -36,10 +41,12 @@ function Dashboard({ children }: PropsWithChildren) {
 
   return (
     <main className="flex flex-col p-8 h-screen">
-      <header>
-        <p className="text-3xl font-medium">Fitness Dashboard</p>
-        <p className="text-gray-500 text-xl my-3">{today}</p>
+      <header className="flex items-center">
+        <p className="text-3xl font-medium grow">Fitness Dashboard</p>
+        <p className="text-lg mr-4">Bienvenido {username}!</p>
+        <LogoutButton />
       </header>
+      <p className="text-gray-500 text-xl my-3">{today}</p>
       <div className="grow flex flex-col">{children}</div>
     </main>
   );

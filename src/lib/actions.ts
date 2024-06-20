@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getUserByEmail, saveUser } from "./users";
 import { revalidatePath } from "next/cache";
-import { createAuthSession } from "./auth";
+import { closeSession, createAuthSession } from "./auth";
 
 export interface UserErrors {
   [index: string]: string;
@@ -92,4 +92,9 @@ export const login = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const logout = async () => {
+  await closeSession();
+  redirect("/");
 };

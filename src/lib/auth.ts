@@ -2,6 +2,7 @@ import { Lucia } from "lucia";
 import { NodePostgresAdapter } from "@lucia-auth/adapter-postgresql";
 import db from "./initdb";
 import { cookies } from "next/headers";
+import { User, getUserById } from "./users";
 
 const adapter = new NodePostgresAdapter(db, {
   user: "users",
@@ -34,6 +35,7 @@ export async function verifyAuth() {
     return {
       user: null,
       session: null,
+      data: null,
     };
   }
 
@@ -43,10 +45,12 @@ export async function verifyAuth() {
     return {
       user: null,
       session: null,
+      data: null,
     };
   }
 
   const result = await lucia.validateSession(sessionId);
+  const userResult = await getUserById(result.session?.userId || "");
 
   try {
     if (result.session && result.session.fresh) {
@@ -66,5 +70,23 @@ export async function verifyAuth() {
       );
     }
   } catch {}
-  return result;
+  return { ...result, data: userResult };
+}
+
+export async function closeSession() {
+  try {
+    const { session } = await verifyAuth();
+    if (!session) {
+      throw new Error();
+    }
+    await lucia.invalidateSession(session.id);
+    const sessionCookie = lucia.createBlankSessionCookie();
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes
+    );
+  } catch (error) {
+    throw error;
+  }
 }

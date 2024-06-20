@@ -11,12 +11,12 @@ import Dashboard from "@/components/Dashboard";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const { user } = await verifyAuth();
+  const { user, data } = await verifyAuth();
 
   if (!user) return redirect("/");
 
   return (
-    <Dashboard>
+    <Dashboard username={data.name}>
       <section className="flex justify-between gap-32 my-5 grow">
         <StatsCard
           url="/stats/activity"
