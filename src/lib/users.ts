@@ -1,4 +1,4 @@
-import db from "./initdb";
+import { sql } from "./initdb";
 
 export interface User {
   id?: number;
@@ -18,30 +18,32 @@ export async function saveUser({
   wheight,
   wformat,
 }: User): Promise<number> {
-  const response = await db.query(
-    "INSERT INTO users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;",
+  const response = await sql(
+    "INSERT INTO fitness_users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;",
     [name, email, height, hformat, wheight, wformat]
   );
-  return response.rows[0].id;
+  return response[0].id;
 }
 
 export async function getUserByEmail(email: string): Promise<User> {
   try {
-    const response = await db.query("SELECT * FROM users WHERE email = $1;", [
-      email,
-    ]);
-    return response.rows[0];
+    const response = await sql(
+      "SELECT * FROM fitness_users WHERE email = $1;",
+      [email]
+    );
+    return response[0] as User;
   } catch (error) {
     throw error;
   }
 }
 
-export async function getUserById(id: string): Promise<User> {
+export async function getUserById(id: string): Promise<User | undefined> {
   try {
-    const response = await db.query("SELECT * FROM users WHERE id = $1;", [
+    if (!id) return;
+    const response = await sql("SELECT * FROM fitness_users WHERE id = $1;", [
       parseInt(id),
     ]);
-    return response.rows[0];
+    return response[0] as User;
   } catch (error) {
     throw error;
   }

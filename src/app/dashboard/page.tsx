@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const { user, data } = await verifyAuth();
 
-  if (!user) return redirect("/");
+  if (!user || !data) return redirect("/");
 
   return (
     <Dashboard username={data.name}>

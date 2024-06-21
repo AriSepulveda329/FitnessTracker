@@ -1,12 +1,12 @@
 import { Lucia } from "lucia";
-import { NodePostgresAdapter } from "@lucia-auth/adapter-postgresql";
-import db from "./initdb";
+import { NeonHTTPAdapter } from "@lucia-auth/adapter-postgresql";
+import { sql } from "./initdb";
 import { cookies } from "next/headers";
-import { User, getUserById } from "./users";
+import { getUserById } from "./users";
 
-const adapter = new NodePostgresAdapter(db, {
-  user: "users",
-  session: "sessions",
+const adapter = new NeonHTTPAdapter(sql, {
+  user: "fitness_users",
+  session: "fitness_sessions",
 });
 
 const lucia = new Lucia(adapter, {
