@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import { getUserByEmail, saveUser } from "./users";
 import { revalidatePath } from "next/cache";
-import { closeSession, createAuthSession } from "./auth";
+import { closeSession, createAuthSession, getUserSession } from "./auth";
+import { getActivitiesByName } from "./activities";
 
 export interface UserErrors {
   [index: string]: string;
@@ -97,4 +98,9 @@ export const login = async (
 export const logout = async () => {
   await closeSession();
   redirect("/");
+};
+
+export const getActivitiesFromStorage = async (activityName: string) => {
+  const result = await getActivitiesByName(activityName);
+  return result;
 };

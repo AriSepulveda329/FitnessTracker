@@ -1,4 +1,4 @@
-import { sql } from "./initdb";
+import { initdb, sql } from "./initdb";
 
 export interface User {
   id?: number;
@@ -18,6 +18,8 @@ export async function saveUser({
   wheight,
   wformat,
 }: User): Promise<number> {
+  await initdb();
+
   const response = await sql(
     "INSERT INTO fitness_users (name, email, height, hformat, wheight, wformat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;",
     [name, email, height, hformat, wheight, wformat]
@@ -26,6 +28,8 @@ export async function saveUser({
 }
 
 export async function getUserByEmail(email: string): Promise<User> {
+  await initdb();
+
   try {
     const response = await sql(
       "SELECT * FROM fitness_users WHERE email = $1;",
@@ -38,10 +42,12 @@ export async function getUserByEmail(email: string): Promise<User> {
 }
 
 export async function getUserById(id: string): Promise<User | undefined> {
+  await initdb();
+
   try {
     if (!id) return;
     const response = await sql("SELECT * FROM fitness_users WHERE id = $1;", [
-      parseInt(id),
+      id,
     ]);
     return response[0] as User;
   } catch (error) {

@@ -28,6 +28,7 @@ export async function initdb() {
     id serial PRIMARY KEY,
     user_id int NOT NULL,
     activities_name varchar(40) NOT NULL,
+    value int NOT NULL,
     activity_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     calories int,
     FOREIGN KEY (user_id) REFERENCES fitness_users(id)

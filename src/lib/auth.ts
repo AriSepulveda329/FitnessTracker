@@ -1,6 +1,6 @@
 import { Lucia } from "lucia";
 import { NeonHTTPAdapter } from "@lucia-auth/adapter-postgresql";
-import { sql } from "./initdb";
+import { initdb, sql } from "./initdb";
 import { cookies } from "next/headers";
 import { getUserById } from "./users";
 
@@ -19,6 +19,7 @@ const lucia = new Lucia(adapter, {
 });
 
 export async function createAuthSession(userId: string) {
+  await initdb();
   const session = await lucia.createSession(userId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
@@ -28,7 +29,8 @@ export async function createAuthSession(userId: string) {
   );
 }
 
-export async function verifyAuth() {
+export async function getUserSession() {
+  await initdb();
   const sessionCookie = cookies().get(lucia.sessionCookieName);
 
   if (!sessionCookie) {
@@ -50,6 +52,12 @@ export async function verifyAuth() {
   }
 
   const result = await lucia.validateSession(sessionId);
+  return result;
+}
+
+export async function verifyAuth() {
+  await initdb();
+  const result = await getUserSession();
   const userResult = await getUserById(result.session?.userId || "");
 
   try {
@@ -74,6 +82,8 @@ export async function verifyAuth() {
 }
 
 export async function closeSession() {
+  await initdb();
+
   try {
     const { session } = await verifyAuth();
     if (!session) {
