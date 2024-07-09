@@ -17,7 +17,9 @@ export async function getActivitiesByName(
   const userId = user.session?.userId || "";
   try {
     const response = await sql(
-      "SELECT activities_name, EXTRACT(DOW FROM activity_time) AS weekday, value, activity_time::time AS time, calories FROM fitness_activities WHERE user_id = $1 AND activities_name = $2 AND EXTRACT(DAY FROM AGE(NOW(), activity_time)) < 7;",
+      `SELECT activities_name, EXTRACT(DOW FROM activity_time) AS weekday, value, activity_time::time AS time, calories FROM fitness_activities 
+       WHERE user_id = $1 AND activities_name = $2 
+             AND activity_time >= DATE_TRUNC('week', CURRENT_DATE) AND activity_time < DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 week';`,
       [userId, activityName]
     );
     return response as Activity[];
