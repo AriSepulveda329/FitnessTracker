@@ -1,5 +1,6 @@
 import { getActivitiesByName } from "@/lib/activities";
 import StatsChart from "./StatsChart";
+import { Suspense } from "react";
 
 async function ItemsChart({ slug }: { slug: string }) {
   const activities = await getActivitiesByName(slug);

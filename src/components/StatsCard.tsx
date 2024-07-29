@@ -1,12 +1,8 @@
-"use client";
-
 import { SvgIconProps } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import styles from "../styles/styles.module.css";
 import AddIcon from "@mui/icons-material/Add";
-import { useRouter } from "next/navigation";
-import useStorage from "@/hooks/useStorage";
 import Link from "next/link";
+import { getActivitiesByName } from "@/lib/activities";
 
 interface StatsCardInterface {
   title: string;
@@ -18,14 +14,7 @@ interface StatsCardInterface {
   typeData: string;
 }
 
-interface Item {
-  id: Date;
-  value: number;
-  weekDay: number;
-  time: string;
-}
-
-function StatsCard({
+async function StatsCard({
   title,
   logo,
   subtitle,
@@ -34,19 +23,15 @@ function StatsCard({
   url,
   typeData,
 }: StatsCardInterface) {
-  const router = useRouter();
-  const [totalValues, setTotalValues] = useState(0);
-  const [items, setItems] = useState<Item[]>();
-  const { getItemsFromStorage } = useStorage(tableName);
-
-  useEffect(() => {
-    setItems(getItemsFromStorage());
-  }, [getItemsFromStorage]);
-
-  useEffect(() => {
-    const total = items?.reduce((acc, curr) => acc + curr.value, 0);
-    setTotalValues(total || 0);
-  }, [items]);
+  const activities = await getActivitiesByName(tableName);
+  const date = new Date();
+  const todayActivities = activities.filter(
+    (act) => act.weekday == date.getDay()
+  );
+  const totalValues =
+    todayActivities.length > 0
+      ? todayActivities.reduce((acc, curr) => acc + curr.value, 0)
+      : 0;
 
   return (
     <Link

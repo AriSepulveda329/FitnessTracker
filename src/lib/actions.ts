@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getUserByEmail, saveUser } from "./users";
 import { revalidatePath } from "next/cache";
 import { closeSession, createAuthSession, getUserSession } from "./auth";
-import { getActivitiesByName } from "./activities";
+import { ActivityInput, getActivitiesByName, saveActivity } from "./activities";
 
 export interface UserErrors {
   [index: string]: string;
@@ -103,4 +103,9 @@ export const logout = async () => {
 export const getActivitiesFromStorage = async (activityName: string) => {
   const result = await getActivitiesByName(activityName);
   return result;
+};
+
+export const saveActivityOnStorage = async (input: ActivityInput) => {
+  await saveActivity(input);
+  revalidatePath("/stats");
 };

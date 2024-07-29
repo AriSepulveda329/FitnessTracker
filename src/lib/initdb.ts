@@ -7,6 +7,7 @@ export const sql = neon(process.env.DATABASE_URL || "");
 
 export async function initdb() {
   try {
+    await sql`SET timezone = 'America/Mexico_City';`;
     await sql`CREATE TABLE IF NOT EXISTS fitness_users (
     ID serial NOT NULL PRIMARY KEY,
     name text NOT NULL,

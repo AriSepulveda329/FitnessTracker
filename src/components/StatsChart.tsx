@@ -2,7 +2,7 @@
 
 import { Activity } from "@/lib/activities";
 import { LineChart } from "@mui/x-charts/LineChart";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 const weekDays = ["M", "T", "W", "Th", "F", "Sa", "S"];
 
@@ -16,8 +16,8 @@ function StatsChart({ activities }: { activities: Activity[] }) {
     if (!activities) return null;
     const reducedItems = activities.reduce(
       (acc: DataItem[], { weekday, value }: DataItem) => {
-        if (!acc[weekday]) acc[weekday] = { weekday, value: 0 };
-        acc[weekday].value += value;
+        if (!acc[weekday - 1]) acc[weekday - 1] = { weekday, value: 0 };
+        acc[weekday - 1].value += value;
         return acc;
       },
       [] as DataItem[]
@@ -28,8 +28,8 @@ function StatsChart({ activities }: { activities: Activity[] }) {
     for (let i = 1; i <= 7; i++) {
       const foundItem =
         i < 7
-          ? reducedItems.find((item) => item?.weekday === i)
-          : reducedItems.find((item) => item?.weekday === 0);
+          ? reducedItems.find((item) => item?.weekday == i)
+          : reducedItems.find((item) => item?.weekday == 0);
       if (foundItem) weekDataset.push(foundItem.value);
       else weekDataset.push(0);
     }

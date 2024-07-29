@@ -2,6 +2,7 @@ import AddButton from "@/components/AddButton";
 import DropdownButton from "@/components/DropdownButton";
 import ItemsChart from "@/components/ItemsChart";
 import ItemsTable from "@/components/ItemsTable";
+import { Suspense } from "react";
 
 function StatPage({ params }: { params: { slug: string } }) {
   return (
