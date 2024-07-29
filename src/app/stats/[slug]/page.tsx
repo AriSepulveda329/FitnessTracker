@@ -8,11 +8,13 @@ function StatPage({ params }: { params: { slug: string } }) {
   return (
     <>
       <ItemsChart slug={params.slug} />
-      <ItemsTable
-        type={params.slug}
-        AddButton={AddButton}
-        DropdownButton={DropdownButton}
-      />
+      <Suspense fallback={"Loading..."}>
+        <ItemsTable
+          type={params.slug}
+          AddButton={AddButton}
+          DropdownButton={DropdownButton}
+        />
+      </Suspense>
     </>
   );
 }
