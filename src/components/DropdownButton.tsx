@@ -18,7 +18,7 @@ type statsValuesType = {
 
 const statsValues: statsValuesType = {
   sleep: [1, 2, 3, 4, 5, 6, 7, 8],
-  goal: [50, 100, 150, 500, 1000, 1500],
+  goal: [50, 100, 150, 250, 500, 1000, 1200, 1500],
   activity: [5, 10, 15, 30, 45, 60],
 };
 
@@ -61,7 +61,7 @@ function DropdownButton({ type }: DropDownButtonProps) {
       </button>
       <div
         className={`${
-          isOpen ? "h-60" : "h-0"
+          isOpen ? "h-70" : "h-0"
         } absolute flex flex-col bg-white top-12 left-24 w-[152px] shadow-md rounded-lg overflow-hidden transition-all duration-500 z-10`}
       >
         {statsValues[type].map((value) => (

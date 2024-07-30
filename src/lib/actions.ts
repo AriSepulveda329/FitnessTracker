@@ -3,12 +3,28 @@
 import { redirect } from "next/navigation";
 import { getUserByEmail, saveUser } from "./users";
 import { revalidatePath } from "next/cache";
-import { closeSession, createAuthSession, getUserSession } from "./auth";
-import { ActivityInput, getActivitiesByName, saveActivity } from "./activities";
+import { closeSession, createAuthSession } from "./auth";
+import {
+  ActivityInput,
+  ExerciseInput,
+  deleteExercise,
+  getActivitiesByName,
+  getWeekExercises,
+  saveActivity,
+  saveExercise,
+} from "./activities";
+import caloriesPerActivity from "@/utils/caloriesPerActivity";
 
 export interface UserErrors {
   [index: string]: string;
 }
+
+export interface ExerciseErrors {
+  [index: string]: string;
+}
+
+const validExerciseNames = ["Walk", "Run", "Bike", "Swim", "Gym", "Other"];
+const validDurationValues = [15, 30, 45, 60, 90, 120];
 
 interface DatabaseError {
   message: string;
@@ -108,4 +124,62 @@ export const getActivitiesFromStorage = async (activityName: string) => {
 export const saveActivityOnStorage = async (input: ActivityInput) => {
   await saveActivity(input);
   revalidatePath("/stats");
+};
+
+export const getExercisesFromStorage = async () => {
+  const result = await getWeekExercises();
+  return result;
+};
+
+export const saveExerciseOnStorage = async (
+  prevState: { errors: ExerciseErrors | null } | undefined,
+  formData: FormData
+) => {
+  const exDay = new Date();
+  const cpm = caloriesPerActivity[formData.get("exercise_name") as string];
+  const duration = parseInt(formData.get("duration") as string);
+  const dow = parseInt(formData.get("dow") as string);
+  const diffDays = dow - exDay.getDay();
+  exDay.setDate(exDay.getDate() + diffDays);
+  const exercise = {
+    name: formData.get("exercise_name") as string,
+    exerciseDate: exDay,
+    startTime: `${formData.get("hours")}:${formData.get(
+      "minutes"
+    )} ${formData.get("ampm")}`,
+    duration: duration,
+    calories: cpm ? cpm * duration : 0,
+  };
+
+  let errors: ExerciseErrors = {};
+
+  if (
+    isInvalidText(exercise.name) ||
+    !validExerciseNames.includes(exercise.name)
+  ) {
+    errors.name = "Not valid exercise";
+  }
+  if (!dow || (dow > 6 && dow < 0)) {
+    errors.dow = "Not valid day of the week";
+  }
+  if (!duration || !validDurationValues.includes(duration)) {
+    errors.duration = "Not valid duration";
+  }
+  if (!exercise.startTime) {
+    errors.startTime = "Not valid start time";
+  }
+
+  if (Object.keys(errors).length > 0) return { errors };
+
+  try {
+    await saveExercise(exercise);
+    revalidatePath("/", "layout");
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteExerciseFromStorage = async (id: number) => {
+  await deleteExercise(id);
+  revalidatePath("/dashboard");
 };

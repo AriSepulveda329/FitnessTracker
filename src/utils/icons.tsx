@@ -5,15 +5,20 @@ import {
   Pool,
   FitnessCenter,
   Sports,
+  SvgIconComponent,
 } from "@mui/icons-material";
 
-const icons = [
-  { name: "Walk", icon: <DirectionsWalk fontSize="large" /> },
-  { name: "Run", icon: <DirectionsRun fontSize="large" /> },
-  { name: "Bike", icon: <DirectionsBike fontSize="large" /> },
-  { name: "Swim", icon: <Pool fontSize="large" /> },
-  { name: "Gym", icon: <FitnessCenter fontSize="large" /> },
-  { name: "Other", icon: <Sports fontSize="large" /> },
-];
+type IconsType = {
+  [index: string]: JSX.Element;
+};
+
+const icons: IconsType = {
+  walk: <DirectionsWalk fontSize="large" />,
+  run: <DirectionsRun fontSize="large" />,
+  bike: <DirectionsBike fontSize="large" />,
+  swim: <Pool fontSize="large" />,
+  gym: <FitnessCenter fontSize="large" />,
+  other: <Sports fontSize="large" />,
+};
 
 export default icons;

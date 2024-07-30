@@ -3,7 +3,11 @@
 import React from "react";
 import { useFormStatus } from "react-dom";
 
-function SubmitButton() {
+interface SubmitButtonProps {
+  text?: string;
+}
+
+function SubmitButton({ text = "Submit" }: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -13,7 +17,7 @@ function SubmitButton() {
       } text-white w-full py-2 mt-4 rounded transition-colors`}
       disabled={pending}
     >
-      {pending ? "Checking..." : "Submit"}
+      {pending ? "Checking..." : text}
     </button>
   );
 }

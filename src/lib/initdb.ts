@@ -39,8 +39,9 @@ export async function initdb() {
     id serial PRIMARY KEY,
     user_id int NOT NULL,
     name varchar(40) NOT NULL,
-    exercise_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    duration varchar(40) NOT NULL,
+    exercise_time date NOT NULL,
+    start_time varchar(40) NOT NULL,
+    duration int NOT NULL,
     calories int NOT NULL,
     FOREIGN KEY (user_id) REFERENCES fitness_users (id)
   );`;

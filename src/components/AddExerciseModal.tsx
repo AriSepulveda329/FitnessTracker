@@ -1,31 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+"use client";
+
+import React, { useCallback, useEffect, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Styles from "@/styles/styles.module.css";
-import useStorage, { Exercise } from "@/hooks/useStorage";
-import useDate from "@/hooks/useDate";
-import caloriesPerActivity from "@/utils/caloriesPerActivity";
+import { useFormState } from "react-dom";
+import { ExerciseErrors, saveExerciseOnStorage } from "@/lib/actions";
+import SubmitButton from "./SubmitButton";
 
 interface AddExerciseModal {
   isOpen: boolean;
   onClose(): void;
-  saveActivities(activity: Exercise): void;
   exDay: number;
 }
 
-function AddExerciseModal({
-  isOpen,
-  onClose,
-  saveActivities,
-  exDay,
-}: AddExerciseModal) {
+function AddExerciseModal({ isOpen, onClose, exDay }: AddExerciseModal) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { saveExerciseOnStorage } = useStorage("exercise");
-  const { date } = useDate(new Date());
-  const [exercise, setExercise] = useState("Walk");
-  const [hours, setHours] = useState("1");
-  const [minutes, setMinutes] = useState("00");
-  const [ampm, setAmpm] = useState("am");
-  const [duration, setDuration] = useState(15);
+  const [state, formAction] = useFormState<
+    { errors: ExerciseErrors | null } | undefined,
+    FormData
+  >(saveExerciseOnStorage, { errors: null });
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -38,29 +31,6 @@ function AddExerciseModal({
     },
     [onClose]
   );
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const foundActivity = caloriesPerActivity.find(
-      (act) => act.name === exercise
-    );
-    const newItem: Exercise = {
-      id: date.toISOString(),
-      exercise: exercise,
-      weekDay: exDay,
-      startTime: hours + ":" + minutes + " " + ampm,
-      duration: duration,
-      calories: foundActivity ? foundActivity.cpm * duration : 0,
-    };
-    saveExerciseOnStorage(newItem);
-    saveActivities(newItem);
-    setExercise("Walk");
-    setHours("1");
-    setMinutes("00");
-    setAmpm("am");
-    setDuration(15);
-    onClose();
-  };
 
   useEffect(() => {
     if (isOpen) {
@@ -84,11 +54,19 @@ function AddExerciseModal({
           <h1 className="text-lg font-medium mb-2 grow">Add Exercise</h1>
           <CloseIcon className="cursor-pointer" onClick={() => onClose()} />
         </section>
-        <form className="flex flex-col" onSubmit={handleSubmit}>
+        <form className="flex flex-col" action={formAction}>
+          <input
+            type="number"
+            id="dow"
+            name="dow"
+            value={exDay}
+            className=" hidden"
+          />
           <label>Pick an Exercise:</label>
           <select
             className="my-2 border border-gray-400 rounded-md p-1 hover:ring-1"
-            onChange={(e) => setExercise(e.target.value)}
+            id="exercise_name"
+            name="exercise_name"
           >
             <option value="Walk">Walk</option>
             <option value="Run">Run</option>
@@ -101,7 +79,8 @@ function AddExerciseModal({
           <section className="flex gap-3 my-2">
             <select
               className="border border-gray-400 rounded-md p-1 grow hover:ring-1"
-              onChange={(e) => setHours(e.target.value)}
+              id="hours"
+              name="hours"
             >
               <option value="1">1</option>
               <option value="2">2</option>
@@ -118,7 +97,8 @@ function AddExerciseModal({
             </select>
             <select
               className="border border-gray-400 rounded-lg p-1 grow hover:ring-1"
-              onChange={(e) => setMinutes(e.target.value)}
+              id="minutes"
+              name="minutes"
             >
               <option value="00">00</option>
               <option value="10">10</option>
@@ -135,7 +115,8 @@ function AddExerciseModal({
             </select>
             <select
               className="border border-gray-400 rounded-lg p-1 grow hover:ring-1"
-              onChange={(e) => setAmpm(e.target.value)}
+              id="ampm"
+              name="ampm"
             >
               <option value="am">AM</option>
               <option value="pm">PM</option>
@@ -144,7 +125,8 @@ function AddExerciseModal({
           <label>Choose a Duration:</label>
           <select
             className="my-2 border border-gray-400 rounded-lg p-1 hover:ring-1"
-            onChange={(e) => setDuration(parseInt(e.target.value))}
+            id="duration"
+            name="duration"
           >
             <option value={15}>15 min</option>
             <option value={30}>30 min</option>
@@ -153,12 +135,15 @@ function AddExerciseModal({
             <option value={90}>1.5 hrs</option>
             <option value={120}>2 hrs</option>
           </select>
-          <button
-            type="submit"
-            className="mt-2 bg-green-400 rounded-full text-white py-1 hover:bg-green-500 transition-colors"
-          >
-            Add
-          </button>
+          {state?.errors && (
+            <ul id="form-errors" className="text-red-500">
+              {Object.keys(state.errors).map(
+                (error) =>
+                  state.errors && <li key={error}>{state.errors[error]}</li>
+              )}
+            </ul>
+          )}
+          <SubmitButton text="Add" />
         </form>
       </div>
     </div>

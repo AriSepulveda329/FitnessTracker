@@ -1,6 +1,6 @@
-import { Exercise } from "@/hooks/useStorage";
 import React from "react";
 import Styles from "@/styles/styles.module.css";
+import { Exercise } from "@/lib/activities";
 
 interface DayButtonProps {
   handleChangeDay(day: number): void;
@@ -22,7 +22,7 @@ function DayButton({
       <button
         onClick={() => handleChangeDay(day)}
         className={`w-7 h-24 relative ${
-          exercises?.find((ex) => ex.weekDay === day)
+          exercises?.find((ex) => ex.weekday === day)
             ? `bg-green-500 ${Styles.checkDay}`
             : "bg-green-200"
         } ${
