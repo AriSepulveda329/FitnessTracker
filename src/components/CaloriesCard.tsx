@@ -1,24 +1,15 @@
-"use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import useStorage, { Exercise, Item } from "@/hooks/useStorage";
-import useDate from "@/hooks/useDate";
-import { useMyContext } from "@/utils/MyContext";
+import { getActivitiesByName } from "@/lib/activities";
+import { getExercisesFromStorage } from "@/lib/actions";
 
-function CaloriesCard() {
-  const { getItemsFromStorage: getActivitiesFromStorage } =
-    useStorage("activity");
-  const { getItemsFromStorage: getGoalsFromStorage } = useStorage("goal");
-  const { day } = useDate(new Date());
-  const { exercises } = useMyContext();
-  const [exercise, setExercise] = useState<Exercise>();
-  const [activities, setActivities] = useState<Item[]>();
-  const [goals, setGoals] = useState<Item[]>();
-  const [caloriesPercentage, setCaloriesPercentage] = useState(0);
-  const [totalCalories, setTotalCalories] = useState(0);
-
-  const getTotalPercentageCalories = useCallback(() => {
-    const caloriesFromExercise = exercise?.calories || 0;
+async function CaloriesCard() {
+  const today = new Date();
+  const activities = await getActivitiesByName("activity");
+  const goals = await getActivitiesByName("goal");
+  const exercises = await getExercisesFromStorage();
+  const todayExercise = exercises?.find((ex) => ex.weekday == today.getDay());
+  const getTotalCalories = () => {
+    const caloriesFromExercise = todayExercise?.calories || 0;
     const caloriesFromActivities =
       activities?.reduce(
         (acc, curr) => (curr.calories ? acc + curr.calories : acc + 0),
@@ -31,19 +22,10 @@ function CaloriesCard() {
       ) || 0;
     const totalCalories =
       caloriesFromExercise + caloriesFromActivities + caloriesFromGoals;
-    setTotalCalories(totalCalories);
-    return (totalCalories * 100) / 2000;
-  }, [activities, exercise, goals]);
-
-  useEffect(() => {
-    setExercise(exercises?.find((ex) => ex.weekDay === day));
-    setActivities(getActivitiesFromStorage());
-    setGoals(getGoalsFromStorage());
-  }, [getActivitiesFromStorage, getGoalsFromStorage, exercises, day]);
-
-  useEffect(() => {
-    setCaloriesPercentage(getTotalPercentageCalories());
-  }, [getTotalPercentageCalories]);
+    return totalCalories;
+  };
+  const totalCalories = getTotalCalories();
+  const caloriesPercentage = (getTotalCalories() * 100) / 2000;
 
   return (
     <div className="shadow-lg w-1/2 p-5 rounded-xl bg-white">
