@@ -43,7 +43,7 @@ function Dashboard({ children, username }: DashboardProps) {
     <main className="flex flex-col p-8 h-screen">
       <header className="flex items-center">
         <p className="text-3xl font-medium grow">Fitness Dashboard</p>
-        <p className="text-lg mr-4">Bienvenido {username}!</p>
+        <p className="text-lg mr-4">Welcome {username}!</p>
         <LogoutButton />
       </header>
       <p className="text-gray-500 text-xl my-3">{today}</p>

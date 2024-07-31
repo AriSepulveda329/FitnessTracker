@@ -132,7 +132,7 @@ export const getExercisesFromStorage = async () => {
 };
 
 export const saveExerciseOnStorage = async (
-  prevState: { errors: ExerciseErrors | null } | undefined,
+  prevState: { errors: ExerciseErrors | null },
   formData: FormData
 ) => {
   const exDay = new Date();
@@ -174,6 +174,7 @@ export const saveExerciseOnStorage = async (
   try {
     await saveExercise(exercise);
     revalidatePath("/", "layout");
+    return prevState;
   } catch (error) {
     throw error;
   }

@@ -13,7 +13,7 @@ export interface Exercise {
   id: number;
   name: string;
   weekday: number;
-  startTime: string;
+  start_time: string;
   duration: number;
   calories: number;
 }

@@ -16,7 +16,7 @@ interface AddExerciseModal {
 function AddExerciseModal({ isOpen, onClose, exDay }: AddExerciseModal) {
   const modalRef = useRef<HTMLDivElement>(null);
   const [state, formAction] = useFormState<
-    { errors: ExerciseErrors | null } | undefined,
+    { errors: ExerciseErrors | null },
     FormData
   >(saveExerciseOnStorage, { errors: null });
 
@@ -42,6 +42,12 @@ function AddExerciseModal({ isOpen, onClose, exDay }: AddExerciseModal) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, handleClickOutside]);
+
+  useEffect(() => {
+    if (!state.errors) {
+      onClose();
+    }
+  }, [state]);
 
   if (!isOpen) {
     return null;

@@ -18,14 +18,13 @@ function WeekButtonsRow({ exercises }: WeekButtonsRowProps) {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleChangeDay = (day: number) => {
-    const foundExercise = exercises.find((ex) => ex.weekday === day);
+    const foundExercise = exercises.find((ex) => ex.weekday == day);
     setWkDay(day);
     setExercise(foundExercise);
   };
 
   useEffect(() => {
-    setExercise(exercises.find((ex) => ex.weekday === date.getDay()));
-    console.log(exercise);
+    setExercise(exercises.find((ex) => ex.weekday == date.getDay()));
   }, [exercises]);
 
   return (
@@ -93,7 +92,7 @@ function WeekButtonsRow({ exercises }: WeekButtonsRowProps) {
       {exercise ? (
         <ExerciseActivity
           title={exercise.name}
-          startTime={exercise.startTime}
+          startTime={exercise.start_time}
           duration={exercise.duration}
           id={exercise.id}
           setExercise={setExercise}

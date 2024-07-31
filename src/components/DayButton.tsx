@@ -22,7 +22,7 @@ function DayButton({
       <button
         onClick={() => handleChangeDay(day)}
         className={`w-7 h-24 relative ${
-          exercises?.find((ex) => ex.weekday === day)
+          exercises?.find((ex) => ex.weekday == day)
             ? `bg-green-500 ${Styles.checkDay}`
             : "bg-green-200"
         } ${
